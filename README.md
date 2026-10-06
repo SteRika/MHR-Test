@@ -1,81 +1,60 @@
-# MHR-Test — Hero Rush Live v1.5 Blue + Green Alpha
+# MHR-Test — Hero Rush Live v1.7 Arena Alpha
 
-Unofficial, text-only Marvel Hero Rush digital TCG prototype for Android. No copyrighted card artwork is bundled.
+Unofficial, text-first Marvel Hero Rush digital TCG prototype for Android.
 
-## v1.5 — Blue + Green gameplay
+## v1.7 — Arena presentation upgrade
 
-v1.5 brings both remaining BP01 colors into the playable Alpha pool while preserving the card-color border system introduced in v1.4.
+v1.7 keeps the v1.5 BP01 gameplay engine and focuses on making the Android client feel like an actual tabletop/digital TCG.
+
+### New arena
+
+- Battle screen rebuilt around the supplied Hero Rush physical playmat reference.
+- FRONT, WING L, WING R and BACK now use a compact arena geometry instead of four equal columns.
+- Opponent field faces the player field across a central BATTLE line.
+- Base zones are integrated into each side of the arena.
+- Side rails expose Deck, Rush Deck, Retreat, Void and Timeline/Rush progress.
+- The Android match screen runs in immersive landscape mode.
+
+### Compact cards + hold preview
+
+- Cards are smaller while placed on the arena so all zones remain visible.
+- Card borders still follow card color: Red, Yellow, Blue and Green.
+- Press and hold a field, Base or hand card for about 0.32 seconds to open the large card preview.
+- Normal tap behavior remains available for selecting cards, choosing actions and attacking.
+
+### Icon and branding
+
+The user-supplied Avengers emblem is now used as:
+
+- Android launcher icon
+- in-game v1.7 battle logo
+- deck/card-back motif
+- subtle card preview artwork motif
+
+The embedded asset is optimized for APK size while retaining the supplied image.
 
 ### BP01 gameplay status
 
-- **Red:** BP01-001 through BP01-030 — 30 playable Alpha cards
-- **Yellow:** BP01-031 through BP01-060 — 29 playable Alpha cards
-- **Blue:** BP01-061 through BP01-090 — 30 playable Alpha cards
-- **Green:** BP01-093 through BP01-120 — 28 playable Alpha cards
-- **Reference-only:** BP01-049, BP01-091 and BP01-092
-- **Total BP01 database:** 120 Character cards
-- **Current playable pool:** 117 cards
+- Red: 30 playable
+- Yellow: 29 playable
+- Blue: 30 playable
+- Green: 28 playable
+- Total playable: **117 / 120 BP01 Character cards**
+- Reference-only: BP01-049, BP01-091, BP01-092
 
-The three reference-only cards remain disabled rather than receiving invented behavior where their complete effect wording is not sufficiently verified.
+No gameplay-card implementation was removed for the v1.7 UI overhaul.
 
-### v1.5 engine coverage
-
-Blue and Green now use the same executable effect engine as Red and Yellow. Alpha coverage includes:
-
-- call triggers and enter-field reactions
-- automatic Power, Range and Level modifications
-- Counter-style hand defenses
-- Battle ↔ Base movement and movement triggers
-- Retreat, Void, Base and deck recursion
-- attachments and attachment restrictions
-- opening-defense reactions
-- attack triggers and target restrictions
-- end-turn effects
-- hand activations and field activations
-- deck/hand/Base manipulation
-
-Some complex timing windows, optional choices, and multi-target effects currently auto-select the first legal resolution. These will be hardened in a dedicated rules-fidelity pass.
-
-### Card-color borders
-
-Cards remain visually keyed by color everywhere in the client:
-
-- Red — red border
-- Yellow — gold/yellow border
-- Blue — blue border
-- Green — green border
-
-The treatment is used in Collection, deck builder, mulligan, hand, Battle field, Base and compact gameplay cards.
-
-## Existing client features
-
-- mobile Live-style lobby and navigation
-- offline VS AI
-- three locally saved deck slots
-- 50-card legality validation plus 9-card Rush deck
-- mulligan and draw-2 turn flow
-- manual Lv4–6 exact-Level payment
-- Front / Wing L / Wing R / Back battle board
-- repositioning and Wing attack order
-- Range/Power combat and Rush Point victory
-- Collection filters and text card inspector
-- local win/loss statistics
-
-## Build the APK from Android
-
-Android Studio is not required.
+## Build on Android without Android Studio
 
 1. Open this repository in GitHub.
 2. Go to **Actions**.
 3. Open **Build Android APK**.
 4. Tap **Run workflow**.
 5. Open the successful run.
-6. Download **HeroRushLive-v1.5-blue-green-alpha-debug**.
+6. Download **HeroRushLive-v1.7-arena-alpha-debug**.
 7. Extract the artifact ZIP.
-8. Install `HeroRushLive-v1.5-blue-green-alpha-debug.apk`.
+8. Install `HeroRushLive-v1.7-arena-alpha-debug.apk`.
 
-## Build validation
+The downloadable Android source ZIP also includes its own direct Gradle/GitHub Actions build workflow.
 
-The workflow reconstructs the source from `source-parts/`, verifies the v1.5 source SHA-256, validates all JavaScript assets, checks the complete BP01 card pool and per-color playable counts, verifies that only BP01-049/BP01-091/BP01-092 remain reference-only, then builds with Android SDK 36, JDK 17 and Gradle 9.4.1.
-
-This fan-made testing project is not affiliated with Marvel or the game publisher. Card effect descriptions are paraphrased.
+This is an unofficial fan-made testing project and is not affiliated with Marvel or the game publisher. Card effect descriptions are paraphrased.
