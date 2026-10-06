@@ -37,6 +37,8 @@ Android may ask you to allow **Install unknown apps** for your browser or file m
 
 ## Repository packaging
 
-The Android source is stored in `HeroRushSimulator_v0.9_Android_Source.b64` as a base64-encoded ZIP. The GitHub Actions workflow decodes and extracts it automatically before compiling. This keeps the mobile upload/setup simple while still producing a normal Android APK.
+The Android source ZIP is stored as small base64 chunks under `source-parts/`. The GitHub Actions workflow concatenates the chunks, reconstructs the source ZIP, extracts the Android project, installs the required Android SDK packages, and builds the debug APK automatically.
+
+The current build uses JDK 17, Android SDK 36, Build Tools 36.0.0, and Gradle 9.4.1.
 
 This is an unofficial fan-made testing project and is not affiliated with Marvel or the game publisher.
