@@ -1,0 +1,52 @@
+/* v1.7.1 — short-landscape stability + permanent turn controls */
+:root{--battle-vh:100vh}
+body.battle-mode,.battle-mode #appShell,.battle-mode main,.battle-mode #gameScreen,.v17-battle-shell{height:var(--battle-vh,100vh);max-height:var(--battle-vh,100vh);min-height:0}
+body.battle-mode{overscroll-behavior:none;touch-action:manipulation}
+.battle-mode main,.battle-mode #gameScreen,.v17-battle-shell,.digital-arena,.arena-core,.arena-half{overflow:hidden}
+.v17-battle-shell{grid-template-rows:48px minmax(0,1fr) 82px}
+.v17-lower-hud{height:82px;min-height:82px;max-height:82px;overflow:visible;padding:2px 7px 4px}
+.v17-lower-hud .call-bar{position:absolute;left:7px;right:7px;bottom:calc(100% + 3px);z-index:96;margin:0;padding:3px;background:rgba(3,11,22,.97);border:1px solid #1b6593;border-radius:7px;box-shadow:0 -8px 24px rgba(0,0,0,.45)}
+.v17-lower-hud .call-bar.hidden{display:none}
+.v17-lower-hud .zone-section{height:100%}
+.v17-lower-hud .hand-section{display:grid;grid-template-rows:12px minmax(0,1fr)}
+.v17-lower-hud .section-title{height:12px;margin:0 2px;align-items:center}
+.battle-mode .hand-scroll{min-height:0;height:100%;padding:2px 0;align-items:stretch}
+.battle-mode .hand-card{height:100%;min-height:0;max-height:64px;flex:0 0 86px}
+.v17-action-stack{position:fixed;z-index:130;top:5px;right:50px;display:flex!important;gap:4px;width:auto;pointer-events:auto}
+.v17-action-stack button{min-width:70px;min-height:36px!important;height:36px;padding:0 8px;border-radius:7px!important;font-size:6px!important;white-space:nowrap}
+.v17-action-stack #endTurnButton{min-width:82px}
+.v17-top-actions .hold-tip{display:none}
+.arena-core{grid-template-rows:16px minmax(0,1fr) 18px minmax(0,1fr) 16px;min-height:0}
+.arena-half{min-height:0;align-content:stretch}
+.opponent-half,.player-half{align-content:stretch}
+.arena-board{grid-template-rows:repeat(2,minmax(0,1fr))!important;min-height:0}
+.arena-slot,.empty-slot,.mini-card.arena-card{min-height:0!important}
+.empty-slot{height:calc(100% - 11px)}
+.arena-base-block{min-height:0;overflow:hidden}
+.arena-base-row{min-height:0!important}
+.arena-rail{overflow:hidden}
+.rail-spacer{min-height:2px}
+@media (max-height:430px) and (orientation:landscape){
+  .v17-battle-shell{grid-template-rows:40px minmax(0,1fr) 72px}
+  .v17-battle-top{padding:2px 5px}
+  .v17-logo-button img{width:30px;height:30px}.v17-logo-button b{font-size:10px}.v17-logo-button small{font-size:6px}
+  .v17-turn-cluster>div{min-width:52px;padding:3px 6px}
+  .v17-top-actions .icon-btn{width:30px;height:30px}
+  .v17-action-stack{top:3px;right:42px;gap:3px}
+  .v17-action-stack button{height:32px;min-height:32px!important;min-width:58px;padding:0 6px;font-size:5.5px!important}
+  .v17-action-stack #endTurnButton{min-width:70px}
+  .digital-arena{grid-template-columns:68px minmax(0,1fr) 72px;gap:3px;padding:3px}
+  .arena-core{grid-template-rows:14px minmax(0,1fr) 16px minmax(0,1fr) 14px;gap:1px}
+  .combatant-strip{height:14px;padding:0 4px;font-size:5px}.combatant-strip .avatar-sm{width:11px;height:11px}.combatant-strip strong{font-size:5.5px}
+  .arena-half{grid-template-columns:minmax(0,1fr) 104px;gap:3px}
+  .arena-board{grid-template-columns:repeat(3,minmax(40px,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:2px}
+  .arena-slot{padding:1px;border-radius:5px}.slot-label{height:8px;line-height:8px;font-size:4.2px}.empty-slot{height:calc(100% - 9px);font-size:4px}
+  .mini-card.arena-card{height:calc(100% - 9px)!important;grid-template-rows:11px minmax(0,1fr) 10px;padding:2px}.arena-card-top{grid-template-columns:12px minmax(0,1fr)}.arena-lv{width:11px;height:11px;font-size:5.5px}.arena-card .mini-title{font-size:4.2px!important}.arena-card .mini-stats{font-size:4.5px!important}.arena-card .mini-stats .power{font-size:5.5px}
+  .arena-base-block{grid-template-rows:9px 1fr;padding:1px 2px}.arena-base-block>span{font-size:4px;line-height:7px}.arena-base-row{gap:1px!important}.arena-base-row .base-card{padding:1px}.arena-base-row .base-card img{width:15px;height:15px}.arena-base-row .base-card small,.arena-base-row .base-card strong{font-size:3.5px}
+  .arena-midline{font-size:4.5px;gap:4px}.arena-emblem{width:16px;height:16px}
+  .rail-zone{min-height:27px;padding:2px 4px}.rail-zone span,.timeline-zone>span,.rail-card-stack>span{font-size:3.8px}.rail-zone strong,.rail-card-stack strong{font-size:8px}
+  .timeline-zone{min-height:38px;padding:2px}.rush-meter.vertical{gap:2px;margin-top:2px!important;height:calc(100% - 8px)}
+  .rail-card-stack{min-height:38px;padding:2px;grid-template-columns:26px 1fr;grid-template-rows:1fr 10px}.rail-card-stack .card-back{width:23px;height:32px;box-shadow:2px 1px 0 #111a24,3px 2px 0 #345064}.rail-card-stack .card-back img{width:20px;height:20px}.rush-stack .card-back{box-shadow:2px 1px 0 #151015,3px 2px 0 #5e2a31}
+  .v17-lower-hud{height:72px;min-height:72px;max-height:72px;padding:1px 5px 3px}.v17-lower-hud .phase-hint{display:none}.v17-lower-hud .call-bar{left:5px;right:5px;bottom:calc(100% + 2px)}.v17-lower-hud .call-bar button{min-height:23px;font-size:5px}.v17-lower-hud .hand-section{grid-template-rows:10px minmax(0,1fr)}.v17-lower-hud .section-title{height:10px;font-size:5px}.v17-lower-hud .section-title small{font-size:4px}
+  .battle-mode .hand-card{max-height:none;flex-basis:80px;padding:3px}.battle-mode .hand-card .card-name{font-size:5.5px}.battle-mode .hand-card .full-stats{font-size:4.5px}
+}
