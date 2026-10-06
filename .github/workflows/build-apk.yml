@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build-apk:
-    name: Build debug APK
+    name: Build Hero Rush Live v1.3
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -26,12 +26,14 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          cat source-parts/part-*.b64 > HeroRushSimulator_v0.9_Android_Source.b64
-          base64 --decode HeroRushSimulator_v0.9_Android_Source.b64 > HeroRushSimulator_v0.9_Android_Source.zip
+          cat source-parts/part-*.b64 > HeroRushLive_v1.3_Android_Source.b64
+          base64 --decode HeroRushLive_v1.3_Android_Source.b64 > HeroRushLive_v1.3_Android_Source.zip
           mkdir android-project
-          unzip -q HeroRushSimulator_v0.9_Android_Source.zip -d android-project
+          unzip -q HeroRushLive_v1.3_Android_Source.zip -d android-project
           test -f android-project/settings.gradle
           test -f android-project/app/build.gradle
+          test -f android-project/app/src/main/assets/cards.js
+          test -f android-project/app/src/main/assets/app.js
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -62,6 +64,14 @@ jobs:
         with:
           gradle-version: '9.4.1'
 
+      - name: Validate game JavaScript
+        working-directory: android-project
+        shell: bash
+        run: |
+          set -euxo pipefail
+          node --check app/src/main/assets/cards.js
+          node --check app/src/main/assets/app.js
+
       - name: Build debug APK
         working-directory: android-project
         shell: bash
@@ -71,15 +81,15 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          cp android-project/app/build/outputs/apk/debug/app-debug.apk HeroRushSimulator-v0.9-alpha-debug.apk
-          sha256sum HeroRushSimulator-v0.9-alpha-debug.apk > HeroRushSimulator-v0.9-alpha-debug.apk.sha256
+          cp android-project/app/build/outputs/apk/debug/app-debug.apk HeroRushLive-v1.3-alpha-debug.apk
+          sha256sum HeroRushLive-v1.3-alpha-debug.apk > HeroRushLive-v1.3-alpha-debug.apk.sha256
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: HeroRushSimulator-v0.9-alpha-debug
+          name: HeroRushLive-v1.3-alpha-debug
           path: |
-            HeroRushSimulator-v0.9-alpha-debug.apk
-            HeroRushSimulator-v0.9-alpha-debug.apk.sha256
+            HeroRushLive-v1.3-alpha-debug.apk
+            HeroRushLive-v1.3-alpha-debug.apk.sha256
           if-no-files-found: error
           retention-days: 30
