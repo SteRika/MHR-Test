@@ -13,7 +13,8 @@ function addFilters(){
   row.insertAdjacentHTML('beforeend',`<select id="v131Level"><option value="all">All levels</option>${[1,2,3,4,5,6].map(x=>`<option value="${x}">Lv${x}</option>`).join('')}</select><select id="v131Range"><option value="all">All ranges</option>${[1,2,3,4].map(x=>`<option value="${x}">R-${x}</option>`).join('')}</select><select id="v131Rarity"><option value="all">All rarities</option>${['UR','GR','SR','R'].map(x=>`<option>${x}</option>`).join('')}</select><select id="v131Trait"><option value="all">All traits</option>${['Human','Machine','Avengers','Wakanda','Asgard','Variant','Fantastic Four','The Defenders','Mutant','Atlantis','Zenn-La'].map(x=>`<option>${x}</option>`).join('')}</select>`);
   ['v131Level','v131Range','v131Rarity','v131Trait'].forEach(id=>document.getElementById(id).onchange=enhance);
   const search=document.getElementById('collectionSearch');
-  if(search&&search.oninput){const base=search.oninput;search.oninput=()=>{const q=search.value;search.value='';base.call(search);search.value=q;queueMicrotask(enhance);};search.placeholder='Search name, hero, code, trait or effect';}
+  if(search&&search.oninput&&!search.dataset.v131){search.dataset.v131='1';const base=search.oninput;search.oninput=()=>{const q=search.value;search.value='';base.call(search);search.value=q;queueMicrotask(enhance);};search.placeholder='Search name, hero, code, trait or effect';}
+  ['collectionColor','collectionStatus'].forEach(id=>{const el=document.getElementById(id);if(!el||!el.onchange||el.dataset.v131)return;el.dataset.v131='1';const base=el.onchange;el.onchange=()=>{const q=search?.value||'';if(search)search.value='';base.call(el);if(search)search.value=q;queueMicrotask(enhance);};});
 }
 function enhance(){
   if(busy)return;busy=true;
@@ -30,10 +31,10 @@ function enhance(){
       const ok=(!q||hay.includes(q))&&(lv==='all'||String(c.level)===lv)&&(rg==='all'||String(c.range)===rg)&&(rar==='all'||c.rarity===rar)&&(tr==='all'||(c.traits||[]).includes(tr));
       btn.hidden=!ok;if(ok)shown++;
     });
-    const p=document.querySelector('#collectionScreen .screen-head p');if(p)p.innerHTML=`30 playable · <b>120 BP01 detailed</b> · ${shown} shown`;
-    const home=document.querySelector('#homeCollection small');if(home)home.textContent='120 BP01 cards detailed';
-    const brand=document.querySelector('.brand small');if(brand)brand.textContent='LIVE ALPHA · v1.3.1';
-    const dev=[...document.querySelectorAll('.panel-block')].find(x=>x.textContent.includes('DEVELOPMENT STATUS'));if(dev)dev.innerHTML='<strong>DEVELOPMENT STATUS</strong><p>v1.3.1 includes complete BP01 Character metadata for all 120 cards. The 30 Red cards remain playable; Yellow, Blue and Green are detailed reference cards pending engine implementation.</p>';
+    const p=document.querySelector('#collectionScreen .screen-head p'),ph=`30 playable · <b>120 BP01 detailed</b> · ${shown} shown`;if(p&&p.innerHTML!==ph)p.innerHTML=ph;
+    const home=document.querySelector('#homeCollection small'),ht='120 BP01 cards detailed';if(home&&home.textContent!==ht)home.textContent=ht;
+    const brand=document.querySelector('.brand small'),bt='LIVE ALPHA · v1.3.1';if(brand&&brand.textContent!==bt)brand.textContent=bt;
+    const dev=[...document.querySelectorAll('.panel-block')].find(x=>x.textContent.includes('DEVELOPMENT STATUS')),dh='<strong>DEVELOPMENT STATUS</strong><p>v1.3.1 includes complete BP01 Character metadata for all 120 cards. The 30 Red cards remain playable; Yellow, Blue and Green are detailed reference cards pending engine implementation.</p>';if(dev&&dev.innerHTML!==dh)dev.innerHTML=dh;
   } finally {busy=false;}
 }
 function enhanceModal(){
