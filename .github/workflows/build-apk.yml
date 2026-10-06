@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build-apk:
-    name: Build Hero Rush Live v1.3.1 Card Library
+    name: Build Hero Rush Live v1.4 Yellow Alpha
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -22,40 +22,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Reconstruct v1.3 Android base
+      - name: Reconstruct v1.4 Android source
         shell: bash
         run: |
           set -euxo pipefail
-          cat source-parts/part-*.b64 > HeroRushLive_v1.3_Android_Source.b64
-          base64 --decode HeroRushLive_v1.3_Android_Source.b64 > HeroRushLive_v1.3_Android_Source.zip
+          cat source-parts/part-*.b64 > HeroRushLive_v1.4_Android_Source.b64
+          base64 --decode HeroRushLive_v1.4_Android_Source.b64 > HeroRushLive_v1.4_Android_Source.zip
+          echo "ea2ffe8d2b5f96e06eb70e8e159a1ca9d9d4bde191c95bf50a3df579a99a0e27  HeroRushLive_v1.4_Android_Source.zip" | sha256sum -c -
           mkdir android-project
-          unzip -q HeroRushLive_v1.3_Android_Source.zip -d android-project
+          unzip -q HeroRushLive_v1.4_Android_Source.zip -d android-project
           test -f android-project/settings.gradle
           test -f android-project/app/build.gradle
           test -f android-project/app/src/main/assets/cards.js
+          test -f android-project/app/src/main/assets/v14-yellow-data.js
           test -f android-project/app/src/main/assets/app.js
-
-      - name: Apply v1.3.1 card library patch
-        shell: bash
-        run: |
-          set -euxo pipefail
-          cp patches/v131-card-data.js android-project/app/src/main/assets/v131-card-data.js
-          cp patches/v131-card-ui.js android-project/app/src/main/assets/v131-card-ui.js
-          cp patches/v131-card-ui.css android-project/app/src/main/assets/v131-card-ui.css
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path("android-project/app/src/main/assets/index.html")
-          s=p.read_text()
-          s=s.replace('<link rel="stylesheet" href="app.css" />','<link rel="stylesheet" href="app.css" />\n  <link rel="stylesheet" href="v131-card-ui.css" />')
-          s=s.replace('<script src="cards.js"></script>','<script src="cards.js"></script>\n<script src="v131-card-data.js"></script>')
-          s=s.replace('<script src="app.js"></script>','<script src="app.js"></script>\n<script src="v131-card-ui.js"></script>')
-          p.write_text(s)
-          g=Path("android-project/app/build.gradle")
-          x=g.read_text().replace("versionCode 13","versionCode 14").replace("versionName '1.3-alpha'","versionName '1.3.1-card-library-alpha'")
-          g.write_text(x)
-          PY
-          grep -q 'v131-card-data.js' android-project/app/src/main/assets/index.html
-          grep -q "versionCode 14" android-project/app/build.gradle
+          grep -q "versionCode 15" android-project/app/build.gradle
+          grep -q "versionName '1.4-yellow-alpha'" android-project/app/build.gradle
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -86,29 +68,34 @@ jobs:
         with:
           gradle-version: '9.4.1'
 
-      - name: Validate game JavaScript
+      - name: Validate game JavaScript and card pool
         working-directory: android-project
         shell: bash
         run: |
           set -euxo pipefail
           node --check app/src/main/assets/cards.js
-          node --check app/src/main/assets/v131-card-data.js
+          node --check app/src/main/assets/v14-yellow-data.js
           node --check app/src/main/assets/app.js
-          node --check app/src/main/assets/v131-card-ui.js
           node - <<'JS'
           global.window={};
           require('./app/src/main/assets/cards.js');
-          require('./app/src/main/assets/v131-card-data.js');
+          require('./app/src/main/assets/v14-yellow-data.js');
           const db=window.CARD_DB;
           if(db.length!==120) throw new Error('Expected 120 BP01 Character cards');
-          for(const c of db){
-            if(c.level==null||c.range==null||c.power==null||!c.rarity||!c.color) throw new Error('Missing metadata: '+c.code);
-          }
-          for(const color of ['Red','Yellow','Blue','Green']){
-            if(db.filter(c=>c.color===color).length!==30) throw new Error('Expected 30 '+color+' cards');
-          }
-          console.log('Validated 120 BP01 Character cards');
+          const live=db.filter(c=>c.impl==='live');
+          const red=live.filter(c=>c.color==='Red');
+          const yellow=live.filter(c=>c.color==='Yellow');
+          if(live.length!==59) throw new Error('Expected 59 playable cards, got '+live.length);
+          if(red.length!==30) throw new Error('Expected 30 playable Red cards');
+          if(yellow.length!==29) throw new Error('Expected 29 playable Yellow cards');
+          const pending=db.find(c=>c.code==='BP01-049');
+          if(!pending || pending.impl==='live') throw new Error('BP01-049 must remain reference-only');
+          console.log('Validated:', {total:db.length, live:live.length, red:red.length, yellow:yellow.length});
           JS
+          grep -q "card-border-yellow" app/src/main/assets/app.css
+          grep -q "card-border-blue" app/src/main/assets/app.css
+          grep -q "card-border-green" app/src/main/assets/app.css
+          grep -q "card-border-red" app/src/main/assets/app.css
 
       - name: Build debug APK
         working-directory: android-project
@@ -119,15 +106,15 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          cp android-project/app/build/outputs/apk/debug/app-debug.apk HeroRushLive-v1.3.1-card-library-debug.apk
-          sha256sum HeroRushLive-v1.3.1-card-library-debug.apk > HeroRushLive-v1.3.1-card-library-debug.apk.sha256
+          cp android-project/app/build/outputs/apk/debug/app-debug.apk HeroRushLive-v1.4-yellow-alpha-debug.apk
+          sha256sum HeroRushLive-v1.4-yellow-alpha-debug.apk > HeroRushLive-v1.4-yellow-alpha-debug.apk.sha256
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: HeroRushLive-v1.3.1-card-library-debug
+          name: HeroRushLive-v1.4-yellow-alpha-debug
           path: |
-            HeroRushLive-v1.3.1-card-library-debug.apk
-            HeroRushLive-v1.3.1-card-library-debug.apk.sha256
+            HeroRushLive-v1.4-yellow-alpha-debug.apk
+            HeroRushLive-v1.4-yellow-alpha-debug.apk.sha256
           if-no-files-found: error
           retention-days: 30
