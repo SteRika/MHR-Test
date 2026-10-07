@@ -33,8 +33,8 @@ jobs:
           unzip -q HeroRushLive_v1.9_Android_Source.zip -d android-project
           test -f android-project/app/src/main/assets/sp01-data.js
           test -f android-project/tools/sp01-validation.js
-          grep -q "versionCode 24" android-project/app/build.gradle
-          grep -q "versionName '1.9.1-reposition-fix'" android-project/app/build.gradle
+          grep -q "versionCode 23" android-project/app/build.gradle
+          grep -q "versionName '1.9-sp01-catalog-alpha'" android-project/app/build.gradle
           grep -q 'android:screenOrientation="portrait"' android-project/app/src/main/AndroidManifest.xml
 
       - name: Apply v1.9.1 reposition interaction fix
@@ -85,6 +85,9 @@ jobs:
           node --check app/src/main/assets/app.js
           node tools/rules-regression.js
           node tools/sp01-validation.js\n          node tools/reposition-interaction-validation.js
+          grep -q "versionCode 24" app/build.gradle
+          grep -q "versionName '1.9.1-reposition-fix'" app/build.gradle
+          grep -q 'android:label="Hero Rush Live v1.9.1"' app/src/main/AndroidManifest.xml
           grep -q 'id="collectionSet"' app/src/main/assets/index.html
           grep -q '>SP01<' app/src/main/assets/index.html
           grep -q 'value="0">R-0' app/src/main/assets/index.html
