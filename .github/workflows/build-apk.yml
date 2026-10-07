@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build-apk:
-    name: Build Hero Rush Live v1.9 SP01 Catalog Alpha
+    name: Build Hero Rush Live v1.9.1 Reposition Tap Fix
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -33,9 +33,15 @@ jobs:
           unzip -q HeroRushLive_v1.9_Android_Source.zip -d android-project
           test -f android-project/app/src/main/assets/sp01-data.js
           test -f android-project/tools/sp01-validation.js
-          grep -q "versionCode 23" android-project/app/build.gradle
-          grep -q "versionName '1.9-sp01-catalog-alpha'" android-project/app/build.gradle
+          grep -q "versionCode 24" android-project/app/build.gradle
+          grep -q "versionName '1.9.1-reposition-fix'" android-project/app/build.gradle
           grep -q 'android:screenOrientation="portrait"' android-project/app/src/main/AndroidManifest.xml
+
+      - name: Apply v1.9.1 reposition interaction fix
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 patches/v191-reposition-fix.py
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -66,7 +72,7 @@ jobs:
         with:
           gradle-version: '9.4.1'
 
-      - name: Validate v1.9 rules and SP01 catalog
+      - name: Validate v1.9.1 rules, SP01 catalog and reposition interaction
         working-directory: android-project
         shell: bash
         run: |
@@ -78,7 +84,7 @@ jobs:
           node --check app/src/main/assets/rules-core.js
           node --check app/src/main/assets/app.js
           node tools/rules-regression.js
-          node tools/sp01-validation.js
+          node tools/sp01-validation.js\n          node tools/reposition-interaction-validation.js
           grep -q 'id="collectionSet"' app/src/main/assets/index.html
           grep -q '>SP01<' app/src/main/assets/index.html
           grep -q 'value="0">R-0' app/src/main/assets/index.html
@@ -94,15 +100,15 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          cp android-project/app/build/outputs/apk/debug/app-debug.apk HeroRushLive-v1.9-sp01-catalog-debug.apk
-          sha256sum HeroRushLive-v1.9-sp01-catalog-debug.apk > HeroRushLive-v1.9-sp01-catalog-debug.apk.sha256
+          cp android-project/app/build/outputs/apk/debug/app-debug.apk HeroRushLive-v1.9.1-reposition-fix-debug.apk
+          sha256sum HeroRushLive-v1.9.1-reposition-fix-debug.apk > HeroRushLive-v1.9.1-reposition-fix-debug.apk.sha256
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: HeroRushLive-v1.9-sp01-catalog-debug
+          name: HeroRushLive-v1.9.1-reposition-fix-debug
           path: |
-            HeroRushLive-v1.9-sp01-catalog-debug.apk
-            HeroRushLive-v1.9-sp01-catalog-debug.apk.sha256
+            HeroRushLive-v1.9.1-reposition-fix-debug.apk
+            HeroRushLive-v1.9.1-reposition-fix-debug.apk.sha256
           if-no-files-found: error
           retention-days: 30
