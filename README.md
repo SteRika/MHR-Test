@@ -1,44 +1,37 @@
-# MHR-Test — Hero Rush Live v1.8 Rules Fidelity Alpha
+# MHR-Test — Hero Rush Live v1.9 SP01 Catalog Alpha
 
 Unofficial, text-first Marvel Hero Rush digital TCG prototype for Android.
 
-## v1.8
+## v1.9 — SP01 Era of Spiders
 
-This version focuses on rules correctness and battle interaction rather than adding more cards.
+v1.9 expands the v1.8 rules-fidelity client with the full **80-card SP01 Character catalog** from SP01-001 through SP01-080.
 
-### Rules fidelity
+### SP01 catalog
 
-- Positional Range uses the attacker-row distance matrix:
-  - FRONT → enemy FRONT R-1, WING R-2, BACK R-3
-  - WING → enemy FRONT R-2, WING R-3, BACK R-4
-  - BACK → enemy FRONT R-3, WING R-4, BACK R-5
-- Illegal attack zones remain visible as **LOCKED** and show the minimum required Range.
-- Tapping an illegal target explains why the attack is not legal.
-- Battle/Base movement now gives an explicit reason when movement is blocked.
-- SET 1 / DRAW 1 remains limited to once per turn.
-- Call limits remain enforced, including the opening-turn restriction.
-- Lv4–6 call payment remains manual and exact; payment choices that would exceed the required Level are disabled.
+- 80 SP01 Character cards indexed.
+- 20 Red, 20 Yellow, 20 Blue and 20 Green.
+- Card code, title/hero, rarity, Level, Range and Power are loaded.
+- Collection now filters by **Set: BP01 / SP01**.
+- Range filtering now includes **R-0** and **R-5**.
+- Total Character database is now **200 cards**: 120 BP01 + 80 SP01.
+- SP01 remains **REFERENCE-only in v1.9** until each effect is verified and implemented.
+- The playable pool therefore remains **117 BP01 cards**.
 
-### Effect / response interaction
+This avoids making SP01 cards appear playable with guessed or incomplete rules text.
 
-- Existing Trigger/Counter windows now show a small effect stack with **PASS** and **USE EFFECT**.
-- Sequential player choices are queued rather than overwriting each other.
-- Player-controlled manual targeting is expanded for several effects that previously auto-selected targets, including Hit & Run, Hearing Disarm, and God Of Story.
-- Existing manual effect selections and call-payment selection remain available.
+### Preserved from v1.8
 
-### Regression validation
+- positional Range rules and 22-case regression suite
+- portrait battle arena
+- SET 1 / DRAW 1
+- Response Window / effect stack
+- manual target selection and exact call-payment selection
+- hold-to-preview
+- Red / Yellow / Blue / Green borders
+- offline VS AI
 
-The source includes a reusable rules core and automated regression tests covering Range, movement, Base deployment, and call limits. GitHub Actions runs these checks before compiling the APK.
+### Validation
 
-### Card pool
+GitHub Actions reconstructs the exact v1.9 source package, validates the 80-card SP01 sequence, checks four 20-card color blocks, verifies sample Level/Range/Power records, confirms all SP01 cards remain reference-only, runs the v1.8 rules regression suite, then compiles the Android APK.
 
-- Red: 30 playable
-- Yellow: 29 playable
-- Blue: 30 playable
-- Green: 28 playable
-- Total: **117 / 120 BP01 Character cards playable**
-- Reference-only: BP01-049, BP01-091, BP01-092
-
-Portrait-only arena, hold-to-preview, color borders, deck builder, mulligan, and offline AI are preserved.
-
-This fan-made testing project is not affiliated with Marvel or the game publisher. Card effect descriptions are paraphrased.
+This fan-made testing project is not affiliated with Marvel or the game publisher. Card effect descriptions are paraphrased where present.
