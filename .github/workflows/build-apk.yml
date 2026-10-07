@@ -84,7 +84,8 @@ jobs:
           node --check app/src/main/assets/rules-core.js
           node --check app/src/main/assets/app.js
           node tools/rules-regression.js
-          node tools/sp01-validation.js\n          node tools/reposition-interaction-validation.js
+          node tools/sp01-validation.js
+          node tools/reposition-interaction-validation.js
           grep -q "versionCode 24" app/build.gradle
           grep -q "versionName '1.9.1-reposition-fix'" app/build.gradle
           grep -q 'android:label="Hero Rush Live v1.9.1"' app/src/main/AndroidManifest.xml
