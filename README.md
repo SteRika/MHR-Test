@@ -1,21 +1,20 @@
-# MHR-Test — Hero Rush Live v1.7.3 Range Rules Fix
+# MHR-Test — Hero Rush Live v1.7.4 Positional Range Fix
 
 Unofficial, text-first Marvel Hero Rush digital TCG prototype for Android.
 
-## v1.7.3
+## v1.7.4 — Range now counts from the attacker's current row
 
-This release corrects Battle target legality by treating Range as target depth into the opponent's formation.
+The previous v1.7.3 implementation only checked how deep the target was in the opponent's formation. v1.7.4 corrects this by also including the attacker's starting position.
 
-- **R-0:** no normal Battle target
-- **R-1:** FRONT only
-- **R-2:** FRONT + WING L + WING R
-- **R-3 or higher:** FRONT + both WINGS + BACK
+### Required Range matrix
 
-The same rule is used for normal attacks, AI target selection, redirected attacks, and effects that modify Range during an attack.
+- FRONT attacker → enemy FRONT requires R-1, enemy WINGS R-2, enemy BACK R-3
+- WING attacker → enemy FRONT requires R-2, enemy WINGS R-3, enemy BACK R-4
+- BACK attacker → enemy FRONT requires R-3, enemy WINGS R-4, enemy BACK R-5
 
-The attacker’s own slot does not add extra distance. Range measures how deep the target is in the opponent’s formation.
+Example: a BACK character with R-3 can attack only the opponent FRONT. It cannot attack either Wing or Back.
 
-The attack interaction panel now states the current card's effective Range and the ranks it can legally reach.
+This same matrix is used for normal attacks, AI targeting, attack revalidation after Counter/Response effects, and Range-changing effects.
 
 ## Preserved features
 
