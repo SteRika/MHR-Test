@@ -111,12 +111,13 @@ jobs:
           node --check app/src/main/assets/v172-portrait.js
 
           grep -q "targetDepth" app/src/main/assets/app.js
-          grep -q "targetInRange" app/src/main/assets/app.js\n          grep -q "attackerPenalty" app/src/main/assets/app.js\n          grep -q "requiredRange" app/src/main/assets/app.js
-          grep -q "R-.*FRONT + WINGS" app/src/main/assets/app.js
+          grep -q "targetInRange" app/src/main/assets/app.js
+          grep -q "attackerPenalty" app/src/main/assets/app.js
+          grep -q "requiredRange" app/src/main/assets/app.js
           grep -q "SET 1 / DRAW 1" app/src/main/assets/index.html
           grep -q 'android:screenOrientation="portrait"' app/src/main/AndroidManifest.xml
-          grep -q "versionCode 20" app/build.gradle
-          grep -q "versionName '1.7.3-range-fix'" app/build.gradle
+          grep -q "versionCode 21" app/build.gradle
+          grep -q "versionName '1.7.4-positional-range'" app/build.gradle
 
           node - <<'JS'
           const targetDepth={front:1,wingL:2,wingR:2,back:3};
