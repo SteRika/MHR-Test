@@ -2,126 +2,13 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths-ignore:
-      - '**/*.md'
-  pull_request:
-    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
-  build-apk:
-    name: Build Hero Rush Live v1.8 Rules Fidelity Alpha
+  staging:
+    name: v1.9 source staging
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Reconstruct v1.8 Android source
-        shell: bash
-        run: |
-          set -euxo pipefail
-          cat source-parts/part-*.b64 > HeroRushLive_v1.8_Android_Source.b64
-          base64 --decode HeroRushLive_v1.8_Android_Source.b64 > HeroRushLive_v1.8_Android_Source.zip
-          echo "99f04ca2b0e8de365c391773f07d22a8cd8004f74421924cc196f56ad406c6a1  HeroRushLive_v1.8_Android_Source.zip" | sha256sum -c -
-          mkdir android-project
-          unzip -q HeroRushLive_v1.8_Android_Source.zip -d android-project
-          test -f android-project/app/src/main/assets/rules-core.js
-          test -f android-project/app/src/main/assets/v18-rules.css
-          test -f android-project/tools/rules-regression.js
-          grep -q "versionCode 22" android-project/app/build.gradle
-          grep -q "versionName '1.8-rules-fidelity-alpha'" android-project/app/build.gradle
-          grep -q 'android:screenOrientation="portrait"' android-project/app/src/main/AndroidManifest.xml
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Use preinstalled Android SDK
-        shell: bash
-        run: |
-          set -euxo pipefail
-          SDK_ROOT=/usr/local/lib/android/sdk
-          test -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
-          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
-          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
-          echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
-          echo "$SDK_ROOT/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
-
-      - name: Install Android SDK packages
-        shell: bash
-        run: |
-          set -euxo pipefail
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
-
-      - name: Set up Gradle 9.4.1
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '9.4.1'
-
-      - name: Validate v1.8 rules and JavaScript
-        working-directory: android-project
-        shell: bash
-        run: |
-          set -euxo pipefail
-          node --check app/src/main/assets/rules-core.js
-          node --check app/src/main/assets/cards.js
-          node --check app/src/main/assets/v14-yellow-data.js
-          node --check app/src/main/assets/v15-blue-green-data.js
-          node --check app/src/main/assets/app.js
-          node tools/rules-regression.js
-          grep -q "data-illegal-target" app/src/main/assets/app.js
-          grep -q "RESPONSE WINDOW" app/src/main/assets/app.js
-          grep -q "askControlledChoice" app/src/main/assets/app.js
-          grep -q "choiceQueue" app/src/main/assets/app.js
-          grep -q "Rules.canSetBase" app/src/main/assets/app.js
-          grep -q "movementReasonFor" app/src/main/assets/app.js
-
-      - name: Validate full BP01 pool
-        working-directory: android-project
-        shell: bash
-        run: |
-          node - <<'JS'
-          global.window={};
-          require('./app/src/main/assets/cards.js');
-          require('./app/src/main/assets/v14-yellow-data.js');
-          require('./app/src/main/assets/v15-blue-green-data.js');
-          const db=window.CARD_DB;
-          if(db.length!==120) throw new Error('Expected 120 BP01 cards');
-          const live=db.filter(c=>c.impl==='live');
-          if(live.length!==117) throw new Error('Expected 117 playable cards');
-          const refs=db.filter(c=>c.impl!=='live').map(c=>c.code).sort();
-          const expected=['BP01-049','BP01-091','BP01-092'];
-          if(JSON.stringify(refs)!==JSON.stringify(expected)) throw new Error('Unexpected reference-only cards');
-          console.log('BP01 v1.8 pool validation passed');
-          JS
-
-      - name: Build debug APK
-        working-directory: android-project
-        shell: bash
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
-
-      - name: Prepare APK
-        shell: bash
-        run: |
-          set -euxo pipefail
-          cp android-project/app/build/outputs/apk/debug/app-debug.apk HeroRushLive-v1.8-rules-fidelity-debug.apk
-          sha256sum HeroRushLive-v1.8-rules-fidelity-debug.apk > HeroRushLive-v1.8-rules-fidelity-debug.apk.sha256
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: HeroRushLive-v1.8-rules-fidelity-debug
-          path: |
-            HeroRushLive-v1.8-rules-fidelity-debug.apk
-            HeroRushLive-v1.8-rules-fidelity-debug.apk.sha256
-          if-no-files-found: error
-          retention-days: 30
+      - run: echo "v1.9 source upload staging"
